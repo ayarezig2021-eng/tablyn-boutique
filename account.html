@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Account | Tablyn</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <script>
+    try {
+      var th = localStorage.getItem('tf_theme');
+      if (!th) th = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.classList.toggle('dark', th === 'dark');
+    } catch (e) { }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:250 250 249; --surface:255 255 255; --surface2:244 244 245; --line:228 228 231; --fg:24 24 27; --muted:113 113 122; --brand:79 70 229; }
+    .dark { --bg:13 14 17; --surface:22 24 29; --surface2:29 32 39; --line:42 46 56; --fg:236 238 243; --muted:160 164 176; --brand:129 140 248; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { font-family: Inter, Cairo, system-ui, sans-serif; background: rgb(var(--bg)); color: rgb(var(--fg)); line-height: 1.5; }
+    [dir="rtl"] body { font-family: Cairo, Inter, system-ui, sans-serif; }
+    a { color: rgb(var(--brand)); }
+    header { position: sticky; top: 0; z-index: 10; background: rgb(var(--surface)); border-bottom: 1px solid rgb(var(--line)); }
+    .bar { max-width: 960px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.15rem; color: rgb(var(--fg)); text-decoration: none; margin-inline-end: auto; }
+    .logo i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: rgb(var(--brand)); color: #fff; font-style: normal; }
+    main { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+    h1 { font-size: 1.7rem; margin: 0 0 4px; }
+    h2 { font-size: 1.25rem; margin: 0 0 4px; }
+    .muted { color: rgb(var(--muted)); font-size: .92rem; }
+    section.card { background: rgb(var(--surface)); border: 1px solid rgb(var(--line)); border-radius: 16px; padding: 20px; margin-top: 20px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 16px; border-radius: 999px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface)); color: rgb(var(--fg)); font: 600 .9rem inherit; font-family: inherit; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: rgb(var(--surface2)); }
+    .btn.primary { background: rgb(var(--brand)); border-color: rgb(var(--brand)); color: #fff; }
+    .btn.danger { color: #dc2626; border-color: #fca5a5; }
+    .btn.small { padding: 6px 12px; font-size: .82rem; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .grow { flex: 1 1 200px; }
+    .item { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid rgb(var(--line)); }
+    .item:first-of-type { border-top: 0; }
+    .qty { display: inline-flex; align-items: center; border: 1px solid rgb(var(--line)); border-radius: 999px; overflow: hidden; }
+    .qty button { width: 34px; height: 34px; border: 0; background: rgb(var(--surface2)); color: rgb(var(--fg)); font-size: 1.1rem; cursor: pointer; }
+    .qty input { width: 56px; height: 34px; border: 0; text-align: center; background: rgb(var(--surface)); color: rgb(var(--fg)); font: inherit; -moz-appearance: textfield; }
+    .qty input::-webkit-outer-spin-button, .qty input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .totals { margin-top: 12px; display: grid; gap: 4px; justify-items: end; }
+    .totals strong { font-size: 1.15rem; }
+    .actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .order { border: 1px solid rgb(var(--line)); border-radius: 14px; padding: 16px; margin-top: 14px; background: rgb(var(--bg)); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .78rem; font-weight: 700; background: rgb(var(--surface2)); color: rgb(var(--fg)); }
+    .badge.pending { background: #fef3c7; color: #92400e; }
+    .badge.confirmed, .badge.in_production { background: #dbeafe; color: #1e40af; }
+    .badge.shipped, .badge.completed { background: #dcfce7; color: #166534; }
+    .badge.cancelled { background: #fee2e2; color: #991b1b; }
+    .lines { margin: 10px 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+    .lines li { display: flex; justify-content: space-between; gap: 10px; }
+    #msg { position: fixed; inset-inline: 16px; bottom: 16px; max-width: 460px; margin-inline: auto; padding: 12px 16px; border-radius: 12px; background: rgb(var(--fg)); color: rgb(var(--bg)); font-weight: 600; display: none; z-index: 20; text-align: center; }
+    select { padding: 7px 10px; border-radius: 999px; border: 1px solid rgb(var(--line)); background: rgb(var(--surface)); color: rgb(var(--fg)); font: inherit; }
+    .hidden { display: none !important; }
+    @media (max-width: 560px) { .totals { justify-items: stretch; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <a class="logo" href="index.html"><i>T</i> Tablyn</a>
+      <a class="btn small" id="backShop" href="index.html"></a>
+      <label class="muted" for="langSel" style="position:absolute;left:-9999px">Language</label>
+      <select id="langSel"><option value="en">EN</option><option value="fr">FR</option><option value="ar">ع</option></select>
+      <button class="btn small" id="signOut" type="button"></button>
+    </div>
+  </header>
+
+  <main>
+    <h1 id="pageTitle"></h1>
+    <p class="muted" id="who"></p>
+
+    <section class="card" id="loading"><p class="muted" id="loadingText"></p></section>
+
+    <div id="account" class="hidden">
+      <section class="card" id="cartCard">
+        <h2 id="cartTitle"></h2>
+        <p class="muted" id="cartSub"></p>
+        <div id="cartBody"></div>
+      </section>
+
+      <section class="card" id="ordersCard">
+        <div class="row">
+          <div class="grow"><h2 id="ordersTitle"></h2><p class="muted" id="ordersSub"></p></div>
+          <button class="btn small" id="refreshBtn" type="button"></button>
+        </div>
+        <div id="ordersBody"></div>
+      </section>
+    </div>
+  </main>
+  <div id="msg" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="supabase-data.js"></script>
+  <script src="tablyn-account.js"></script>
+</body>
+</html>
