@@ -10,16 +10,23 @@
   function refreshUi() {
     window.dispatchEvent(new Event("tablyn-auth-state-changed"));
     if (typeof renderNavButtons === "function") renderNavButtons();
-    var out = $("tablynSignOut");
-    if (out) out.style.display = window.tablynAuthState.user ? "" : "none";
+    if (bar) bar.style.display = window.tablynAuthState.user ? "flex" : "none";
   }
 
-  /* small "Sign out" button, only visible when signed in */
-  var out = document.createElement("button");
-  out.id = "tablynSignOut"; out.type = "button"; out.textContent = "Sign out"; out.style.display = "none";
-  out.style.cssText += ";position:fixed;top:70px;right:12px;z-index:60;padding:6px 12px;border-radius:999px;border:1px solid #ccc;background:#fff;color:#111;font:600 12px sans-serif;cursor:pointer";
-  out.style.display = "none";
-  document.body.appendChild(out);
+  /* small "My account" + "Sign out" buttons, only visible when signed in */
+  var pill = "padding:6px 12px;border-radius:999px;border:1px solid #ccc;background:#fff;color:#111;font:600 12px sans-serif;cursor:pointer;text-decoration:none";
+  var bar = null, out = null;
+  if (!window.TABLYN_NO_FLOAT) {
+    bar = document.createElement("div");
+    bar.id = "tablynAccountBar";
+    bar.style.cssText = "position:fixed;top:70px;right:12px;z-index:60;display:none;gap:6px";
+    var acc = document.createElement("a");
+    acc.href = "account.html"; acc.textContent = "My account"; acc.style.cssText = pill;
+    out = document.createElement("button");
+    out.id = "tablynSignOut"; out.type = "button"; out.textContent = "Sign out"; out.style.cssText = pill;
+    bar.appendChild(acc); bar.appendChild(out);
+    document.body.appendChild(bar);
+  }
 
   async function applySession(session) {
     var user = session && session.user ? session.user : null;
@@ -41,7 +48,7 @@
   db.auth.getSession().then(function (r) { applySession(r.data.session); });
   db.auth.onAuthStateChange(function (_e, session) { applySession(session); });
 
-  out.addEventListener("click", async function () {
+  if (out) out.addEventListener("click", async function () {
     await db.auth.signOut();
     if (typeof showPublic === "function") showPublic();
     say("Signed out.");

@@ -1314,7 +1314,7 @@
         <li><a class="hover:text-fg" href="#delivery" data-i18n="nav_delivery">Delivery</a></li>
         <li><a class="hover:text-fg" href="#pricing" data-i18n="nav_pricing">Pricing</a></li>
         <li><a class="hover:text-fg" href="#faq" data-i18n="nav_faq">FAQ</a></li>
-        <li><a class="font-semibold" style="color:#172b4d" href="#customizer">Studio</a></li>
+        <li><a class="font-semibold" style="color:#172b4d" href="studio.html">Studio</a></li>
       </ul>
 
       <div class="ms-auto flex items-center gap-2">
@@ -1373,7 +1373,7 @@
         <li><a class="mlink block rounded-lg bg-surface px-3 py-2" href="#pricing" data-i18n="nav_pricing">Pricing</a>
         </li>
         <li><a class="mlink block rounded-lg bg-surface px-3 py-2" href="#faq" data-i18n="nav_faq">FAQ</a></li>
-        <li><a class="mlink block rounded-lg bg-surface px-3 py-2" href="#customizer">Creation Studio & Accounts</a>
+        <li><a class="mlink block rounded-lg bg-surface px-3 py-2" href="studio.html">Creation Studio & Accounts</a>
         </li>
       </ul>
       <div class="mt-3 grid grid-cols-2 gap-2 text-xs font-semibold">
@@ -1427,7 +1427,7 @@
             <figure style="--d:150ms"
               class="reveal reveal-scale overflow-hidden rounded-3xl border border-line shadow-2xl">
               <img src="assets/tablyn-hero.webp" width="736" height="1225" fetchpriority="high"
-                alt="QR menu stand on a restaurant table with a phone showing the digital men" data-i18n-alt="alt_hero"
+                alt="QR menu stand on a restaurant table with a phone showing the digital menu" data-i18n-alt="alt_hero"
                 data-zoom class="kenburns aspect-[16/10] w-full cursor-zoom-in object-cover" />
             </figure>
             <div style="--d:700ms"
@@ -1601,7 +1601,7 @@
               <p class="mt-3 max-w-2xl text-muted">Choose the pieces that bring your brand into the real world — from
                 elegant smart cards to QR table displays. Made to feel like yours.</p>
             </div>
-            <a href="#customizer" class="collection-studio-link">Create your design <span
+            <a href="studio.html" class="collection-studio-link">Create your design <span
                 aria-hidden="true">↗</span></a>
           </div>
 
@@ -1612,7 +1612,7 @@
               <div class="collection-card-copy"><span class="collection-tag">01 / SMART</span>
                 <h3>Smart cards</h3>
                 <p>A simple tap that opens your menu, contact details or digital destination.</p><a
-                  href="#customizer">Explore in Studio ↗</a>
+                  href="studio.html">Explore in Studio ↗</a>
               </div>
             </article>
             <article class="collection-card">
@@ -1622,7 +1622,7 @@
               <div class="collection-card-copy"><span class="collection-tag">02 / QR</span>
                 <h3>Table displays</h3>
                 <p>Beautiful QR stands and table pieces that make every table work harder.</p><a
-                  href="#customizer">Explore in Studio ↗</a>
+                  href="studio.html">Explore in Studio ↗</a>
               </div>
             </article>
             <article class="collection-card">
@@ -1632,7 +1632,7 @@
               <div class="collection-card-copy"><span class="collection-tag">03 / CUSTOM</span>
                 <h3>Branded pieces</h3>
                 <p>Distinctive shapes, finishes and colors, created around your identity.</p><a
-                  href="#customizer">Explore in Studio ↗</a>
+                  href="studio.html">Explore in Studio ↗</a>
               </div>
             </article>
           </div>
@@ -1755,7 +1755,7 @@
             </article>
           </div>
           <div class="mt-9 text-center">
-            <a href="#customizer" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-500">Create your own design <span class="ml-2" aria-hidden="true">↗</span></a>
+            <a href="studio.html" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-500">Create your own design <span class="ml-2" aria-hidden="true">↗</span></a>
           </div>
         </div>
       </section>
@@ -1948,7 +1948,7 @@
           <div class="studio-teaser-copy"><span class="studio-eyebrow">✦ Tablyn Studio</span>
             <h2>Make your brand unmistakably yours.</h2>
             <p>Create your menu cards, QR stands and smart products in a dedicated design space. Choose shapes, colors,
-              materials and typography, then prepare your order.</p><a class="studio-cta" href="#customizer">Open Tablyn
+              materials and typography, then prepare your order.</p><a class="studio-cta" href="studio.html">Open Tablyn
               Studio <span>→</span></a>
           </div>
           <img src="assets/tablyn-hero.webp" alt="smart card and QR menu stand on a restaurant table" width="736" height="1225" loading="lazy">
@@ -2148,7 +2148,7 @@
         // --- site content (restaurant / café focus) ---
         hc1: "Tap or scan",
         hc2: "Zero paper",
-        alt_hero: "QR menu stand on a restaurant table with a phone showing the digital men",
+        alt_hero: "QR menu stand on a restaurant table with a phone showing the digital menu",
         alt_collage: "Six scenes of tap-enabled menu cards used in a café",
         for_label: "Made for",
         cl1: "Restaurants",
@@ -2574,6 +2574,33 @@
     const state = { material: 'black', shape: 'standard', qty: 1, art: '', name: 'Café Lumière', cart: [], gov: '', session: null, adminShown: false };
     const unitPrice = () => MATERIALS[state.material].price + SHAPES[state.shape].add;
     const cartSubtotal = () => state.cart.reduce((a, i) => a + i.qty * i.unit, 0);
+    /* ---- Cart persistence: shared with account.html through localStorage ---- */
+    const CART_KEY = 'tablyn_cart';
+    const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+    function saveCart() {
+      store.set(CART_KEY, JSON.stringify(state.cart.map(i => {
+        const o = { material: i.material, shape: i.shape, qty: Math.max(1, Math.min(500, Math.floor(Number(i.qty) || 1))) };
+        if (i.design) { o.design = i.design; o.dname = i.dname || ''; }
+        return o;
+      })));
+    }
+    function loadCart() {
+      let raw = []; try { raw = JSON.parse(store.get(CART_KEY) || '[]'); } catch (e) { raw = []; }
+      state.cart = (Array.isArray(raw) ? raw : [])
+        .filter(i => i && own(MATERIALS, i.material) && own(SHAPES, i.shape) && Number.isInteger(i.qty) && i.qty >= 1 && i.qty <= 500)
+        .map(i => {
+          const o = { material: i.material, shape: i.shape, qty: i.qty, unit: MATERIALS[i.material].price + SHAPES[i.shape].add };
+          if (typeof i.design === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(i.design)) { o.design = i.design.toLowerCase(); o.dname = String(i.dname || '').slice(0, 60); }
+          return o;
+        });
+    }
+    function updateCartBadge() {
+      const c = document.getElementById('tablynCartCount');
+      if (c) c.textContent = state.cart.reduce((n, x) => n + (Number(x.qty) || 0), 0);
+    }
+    loadCart();
+    window.addEventListener('storage', (e) => { if (e.key === CART_KEY) { loadCart(); renderSummary(); } });
+    window.addEventListener('DOMContentLoaded', updateCartBadge);
     function deliveryFee() {
       const g = findGov(state.gov); if (!g) return null;
       return cartSubtotal() >= FREE_OVER || cartSubtotal() === 0 ? 0 : ZONES[g[2]].fee;
@@ -2736,7 +2763,7 @@
       if (toast) { toast.textContent = `${item.qty || 1} item${Number(item.qty) === 1 ? '' : 's'} added to your cart`; toast.classList.add('show'); clearTimeout(window.__tablynCartTimer); window.__tablynCartTimer = setTimeout(() => toast.classList.remove('show'), 2100); }
     }
     function addToCart(item) {
-      const ex = state.cart.find(i => i.material === item.material && i.shape === item.shape);
+      const ex = state.cart.find(i => !i.design && !item.design && i.material === item.material && i.shape === item.shape);
       if (ex) ex.qty = Math.min(500, ex.qty + item.qty); else state.cart.push(item);
       renderSummary(); animateTablynCart(item);
     }
@@ -2774,16 +2801,22 @@
       if (!tablynAuthWatch) tablynAuthWatch = setInterval(continuePendingCheckout, 500);
     });
     window.addEventListener('tablyn-auth-state-changed', continuePendingCheckout);
+    if (location.hash === '#checkout' && state.cart.length) {
+      tablynCheckoutPending = true;
+      tablynAuthWatch = setInterval(continuePendingCheckout, 500);
+      setTimeout(() => { if (!tablynIsSignedIn() && state.cart.length) $('checkoutBtn').click(); }, 1800);
+    }
     window.addEventListener('storage', continuePendingCheckout);
 
     function renderSummary() {
+      saveCart(); updateCartBadge();
       const ul = $('cartList'); ul.replaceChildren();
       if (!state.cart.length) {
         const li = document.createElement('li'); li.className = 'text-muted'; li.textContent = t('sum_empty'); ul.appendChild(li);
       }
       state.cart.forEach((it, idx) => {
         const li = document.createElement('li'); li.className = 'flex items-center justify-between gap-2';
-        const a = document.createElement('span'); a.textContent = `${it.qty} × ${t('mat_' + it.material)} · ${t('shp_' + it.shape)}`;
+        const a = document.createElement('span'); a.textContent = `${it.qty} × ${t('mat_' + it.material)} · ${t('shp_' + it.shape)}` + (it.dname ? ` · ${it.dname}` : '');
         const right = document.createElement('span'); right.className = 'flex items-center gap-2';
         const pr = document.createElement('span'); pr.textContent = money(it.qty * it.unit);
         const rm = document.createElement('button'); rm.type = 'button'; rm.textContent = '✕'; rm.className = 'text-muted hover:text-fg'; rm.setAttribute('aria-label', t('remove'));
@@ -2904,7 +2937,7 @@
     // User roles are assigned by the protected profiles table, never by the signup form.
     const openModal = () => { $('authModal').classList.remove('hidden'); $('authModal').classList.add('grid'); };
     const closeModal = () => { $('authModal').classList.add('hidden'); $('authModal').classList.remove('grid'); };
-    document.querySelectorAll('.js-open-auth').forEach(b => b.addEventListener('click', () => { $('mobileMenu').classList.add('hidden'); if (!window.tablynAuthState?.user) openModal(); else if (window.tablynIsAdmin) { state.adminShown ? showPublic() : showAdmin(); } }));
+    document.querySelectorAll('.js-open-auth').forEach(b => b.addEventListener('click', () => { $('mobileMenu').classList.add('hidden'); if (!window.tablynAuthState?.user) openModal(); else if (window.tablynIsAdmin) { state.adminShown ? showPublic() : showAdmin(); } else { location.href = 'account.html'; } }));
     $('closeAuth').addEventListener('click', closeModal);
     $('authModal').addEventListener('click', e => { if (e.target === $('authModal')) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeLightbox(); } });
@@ -3249,7 +3282,7 @@
             governorate: select.value,
             address: document.getElementById('orderAddress').value.trim(),
             notes: document.getElementById('orderNotes').value.trim(),
-            items: state.cart.map(i => ({ material: i.material, shape: i.shape, qty: i.qty, unit: i.unit })),
+            items: state.cart.map(i => (i.design ? { material: i.material, shape: i.shape, qty: i.qty, unit: i.unit, design: i.design } : { material: i.material, shape: i.shape, qty: i.qty, unit: i.unit })),
             subtotal: subtotal, delivery_fee: delivery, total: subtotal + delivery
           });
           state.cart.length = 0; renderSummary();
